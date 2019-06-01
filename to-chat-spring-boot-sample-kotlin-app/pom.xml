@@ -6,7 +6,7 @@
     <name>to-chat-spring-boot-sample-kotlin-app</name>
 
     <parent>
-        <artifactId>spring-boot-to-chat-bot-starter</artifactId>
+        <artifactId>spring-boot-starter-to-chat-bot</artifactId>
         <groupId>chat.to</groupId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
