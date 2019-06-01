@@ -27,7 +27,7 @@
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
 
-        <spring-boot.version>2.1.5.RELEASE</spring-boot.version>
+        <spring-boot.version>2.2.0.M3</spring-boot.version>
 
         <!-- testing -->
         <junit-jupiter.version>5.4.2</junit-jupiter.version>
@@ -104,12 +104,10 @@
                 <artifactId>spring-boot-starter-test</artifactId>
                 <version>${spring-boot.version}</version>
                 <scope>test</scope>
-                <!-- Exclude JUnit 4 from starter-test (and all other related test-starter, i.e
-               those for security and project reactor -->
                 <exclusions>
                     <exclusion>
-                        <groupId>junit</groupId>
-                        <artifactId>junit</artifactId>
+                        <groupId>org.junit.jupiter</groupId>
+                        <artifactId>junit-jupiter</artifactId>
                     </exclusion>
                     <exclusion>
                         <groupId>org.mockito</groupId>
@@ -186,6 +184,21 @@
             </plugins>
         </pluginManagement>
     </build>
+
+    <!-- Remove this when spring boot 2.2 is GA -->
+    <repositories>
+        <repository>
+            <id>repository.spring.milestone</id>
+            <name>Spring Milestone Repository</name>
+            <url>http://repo.spring.io/milestone</url>
+        </repository>
+    </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>spring-milestones</id>
+            <url>http://repo.spring.io/milestone</url>
+        </pluginRepository>
+    </pluginRepositories>
 
     <distributionManagement>
         <repository>
