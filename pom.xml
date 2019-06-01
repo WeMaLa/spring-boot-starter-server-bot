@@ -185,7 +185,7 @@
         </pluginManagement>
     </build>
 
-    <!-- Remove this when spring boot 2.2 is GA -->
+    <!-- TODO Remove this when spring boot 2.2 is GA -->
     <repositories>
         <repository>
             <id>repository.spring.milestone</id>
