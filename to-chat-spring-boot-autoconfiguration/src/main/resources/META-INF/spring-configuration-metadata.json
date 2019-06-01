@@ -1,0 +1,108 @@
+{
+  "groups": [
+    {
+      "name": "chat.to",
+      "type": "chat.to.server.bot.autoconfigure.ToChatBotProperties",
+      "sourceType": "chat.to.server.bot.autoconfigure.ToChatBotProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "chat.to.server.url",
+      "type": "java.lang.String",
+      "sourceType" : "chat.to.server.bot.autoconfigure.ToChatBotProperties"
+    },
+    {
+      "name": "chat.to.bot.identifier",
+      "type": "java.lang.String",
+      "sourceType" : "chat.to.server.bot.autoconfigure.ToChatBotProperties"
+    },
+    {
+      "name": "chat.to.bot.username",
+      "type": "java.lang.String",
+      "sourceType" : "chat.to.server.bot.autoconfigure.ToChatBotProperties"
+    },
+    {
+      "name": "chat.to.bot.password",
+      "type": "java.lang.String",
+      "sourceType" : "chat.to.server.bot.autoconfigure.ToChatBotProperties"
+    },
+    {
+      "name": "chat.to.bot.maxCacheSize",
+      "type": "java.lang.Integer",
+      "sourceType" : "chat.to.server.bot.autoconfigure.ToChatBotProperties"
+    },
+    {
+      "name": "chat.to.server.polling",
+      "type": "java.lang.Integer"
+    }
+  ],
+  "hints": [
+    {
+      "name": "chat.to.server.url",
+      "values": [
+        {
+          "value": "http://dev.to.chat/",
+          "description": "to.chat dev server"
+        },
+        {
+          "value": "http://live.to.chat/",
+          "description": "to.chat live server"
+        }
+      ],
+      "providers": [
+        {
+          "name": "any"
+        }
+      ]
+    },
+    {
+      "name": "chat.to.bot.maxCacheSize",
+      "values": [
+        {
+          "value": "0",
+          "description": "Message cache is deactivated."
+        },
+        {
+          "value": "1000",
+          "description": "Keep the last 1000 message identifiers (default)"
+        }
+      ],
+      "providers": [
+        {
+          "name": "any"
+        }
+      ]
+    },
+    {
+      "name": "chat.to.server.polling",
+      "values": [
+        {
+          "value": "*/5 * * * * *",
+          "description": "Every five seconds (default)"
+        },
+        {
+          "value": "*/1 * * * * *",
+          "description": "Every second"
+        },
+        {
+          "value": "* */1 * * * *",
+          "description": "Every minute"
+        },
+        {
+          "value": "0 0 * * * *",
+          "description": "The top of every hour of every day"
+        },
+        {
+          "value": "0 0 0 25 12 ?",
+          "description": "Every Christmas Day at midnight"
+        }
+      ],
+      "providers": [
+        {
+          "name": "any"
+        }
+      ]
+    }
+  ]
+}
