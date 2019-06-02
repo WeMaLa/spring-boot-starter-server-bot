@@ -1,5 +1,6 @@
 package chat.to.server.bot.authentication
 
+import chat.to.server.bot.cache.BotStatusCache
 import chat.to.server.bot.configuration.Bot
 import chat.to.server.bot.configuration.Server
 import chat.to.server.bot.configuration.WeMaLaConfiguration
@@ -24,22 +25,19 @@ import org.springframework.test.web.client.match.MockRestRequestMatchers
 import org.springframework.test.web.client.response.MockRestResponseCreators
 
 @ExtendWith(SpringExtension::class)
-@SpringBootTest(classes = [LastBotStatusForTesting::class])
+@SpringBootTest
 internal class ServerAuthenticationExchangeServiceTest {
-
-    @Autowired
-    private lateinit var lastBotStatusForTesting: LastBotStatusForTesting
 
     private val restTemplate = RestTemplateBuilder().build()
     private val server = MockRestServiceServer.bindTo(restTemplate).build()
     private val serverRegistrationExchangeServiceMock = mock<ServerRegistrationExchangeService>()
+    private val botStatusCache = BotStatusCache(mock())
     private lateinit var service: ServerAuthenticationExchangeService
 
     @BeforeEach
     fun setUp() {
         val configuration = WeMaLaConfiguration(Bot("unit@test.bot", "unit-test-bot-password", "unit-test-bot-username"), Server("http://server.unit.test/"))
-        service = ServerAuthenticationExchangeService(configuration, restTemplate, lastBotStatusForTesting, serverRegistrationExchangeServiceMock)
-        lastBotStatusForTesting.clear()
+        service = ServerAuthenticationExchangeService(configuration, restTemplate, botStatusCache, serverRegistrationExchangeServiceMock)
     }
 
     @Test
@@ -53,7 +51,7 @@ internal class ServerAuthenticationExchangeServiceTest {
                 .andRespond(MockRestResponseCreators.withSuccess(ObjectMapper().writeValueAsString(response), MediaType.APPLICATION_JSON))
 
         assertThat(service.authenticate()).isEqualTo("unit-test-auth-token")
-        assertThat(lastBotStatusForTesting.lastBotStatus).isNull()
+        assertThat(botStatusCache.botStatus).isEqualTo(BotStatus.STARTING)
 
         server.verify()
     }
@@ -77,7 +75,7 @@ internal class ServerAuthenticationExchangeServiceTest {
                 .andRespond(MockRestResponseCreators.withSuccess(ObjectMapper().writeValueAsString(response), MediaType.APPLICATION_JSON))
 
         assertThat(service.authenticate()).isEqualTo("unit-test-auth-token")
-        assertThat(lastBotStatusForTesting.lastBotStatus).isNull()
+        assertThat(botStatusCache.botStatus).isEqualTo(BotStatus.STARTING)
 
         server.verify()
         verify(serverRegistrationExchangeServiceMock).registerBot()
@@ -96,7 +94,7 @@ internal class ServerAuthenticationExchangeServiceTest {
                 .andRespond(MockRestResponseCreators.withUnauthorizedRequest())
 
         assertThat(service.authenticate()).isNull()
-        assertThat(lastBotStatusForTesting.lastBotStatus).isEqualTo(BotStatus.AUTHENTICATION_FAILED)
+        assertThat(botStatusCache.botStatus).isEqualTo(BotStatus.AUTHENTICATION_FAILED)
 
         server.verify()
         verify(serverRegistrationExchangeServiceMock).registerBot()
@@ -111,7 +109,7 @@ internal class ServerAuthenticationExchangeServiceTest {
                 .andRespond(MockRestResponseCreators.withBadRequest())
 
         assertThat(service.authenticate()).isNull()
-        assertThat(lastBotStatusForTesting.lastBotStatus).isEqualTo(BotStatus.AUTHENTICATION_FAILED)
+        assertThat(botStatusCache.botStatus).isEqualTo(BotStatus.AUTHENTICATION_FAILED)
 
         server.verify()
     }
@@ -125,7 +123,7 @@ internal class ServerAuthenticationExchangeServiceTest {
                 .andRespond(MockRestResponseCreators.withStatus(HttpStatus.CONFLICT))
 
         assertThat(service.authenticate()).isNull()
-        assertThat(lastBotStatusForTesting.lastBotStatus).isEqualTo(BotStatus.AUTHENTICATION_FAILED)
+        assertThat(botStatusCache.botStatus).isEqualTo(BotStatus.AUTHENTICATION_FAILED)
 
         server.verify()
     }

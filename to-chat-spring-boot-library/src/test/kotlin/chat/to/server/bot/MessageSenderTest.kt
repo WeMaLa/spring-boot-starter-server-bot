@@ -1,6 +1,5 @@
 package chat.to.server.bot
 
-import chat.to.server.bot.authentication.LastBotStatusForTesting
 import chat.to.server.bot.authentication.ServerAuthenticationExchangeService
 import chat.to.server.bot.configuration.Bot
 import chat.to.server.bot.configuration.Server
@@ -22,7 +21,7 @@ import org.springframework.test.web.client.match.MockRestRequestMatchers.*
 import org.springframework.test.web.client.response.MockRestResponseCreators.withStatus
 
 @ExtendWith(SpringExtension::class)
-@SpringBootTest(classes = [LastBotStatusForTesting::class])
+@SpringBootTest
 @DisplayName("Send message with")
 internal class MessageSenderTest {
 

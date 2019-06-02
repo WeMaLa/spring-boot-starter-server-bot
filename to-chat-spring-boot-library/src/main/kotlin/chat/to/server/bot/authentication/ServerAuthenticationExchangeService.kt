@@ -1,5 +1,6 @@
 package chat.to.server.bot.authentication
 
+import chat.to.server.bot.cache.BotStatusCache
 import chat.to.server.bot.configuration.WeMaLaConfiguration
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpEntity
@@ -12,7 +13,7 @@ import org.springframework.web.client.RestTemplate
 
 class ServerAuthenticationExchangeService(private var botConfiguration: WeMaLaConfiguration,
                                           private var restTemplate: RestTemplate,
-                                          private var botStatusChangedListener: BotStatusChangedListener,
+                                          private var botStatusCache: BotStatusCache,
                                           private var serverRegistrationExchangeService: ServerRegistrationExchangeService) {
 
     private val log = LoggerFactory.getLogger(ServerAuthenticationExchangeService::class.java)
@@ -35,14 +36,14 @@ class ServerAuthenticationExchangeService(private var botConfiguration: WeMaLaCo
                     }
                 }
             } else {
-                log.error("Authenticaton bot on wemala server failed with message '${e.message}'")
+                log.error("Authentication bot on wemala server failed with message '${e.message}'")
             }
 
-            botStatusChangedListener.botStatusChanged(BotStatus.AUTHENTICATION_FAILED)
+            botStatusCache.authenticationFailed()
             null
         } catch (e: ResourceAccessException) {
-            log.error("Authenticaton bot on wemala server failed with message '${e.message}'")
-            botStatusChangedListener.botStatusChanged(BotStatus.AUTHENTICATION_FAILED)
+            log.error("Authentication bot on wemala server failed with message '${e.message}'")
+            botStatusCache.authenticationFailed()
             null
         }
     }

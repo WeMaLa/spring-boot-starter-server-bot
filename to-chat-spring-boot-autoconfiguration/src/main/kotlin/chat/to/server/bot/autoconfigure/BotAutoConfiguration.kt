@@ -54,6 +54,7 @@ class BotAutoConfiguration(private val toChatBotProperties: ToChatBotProperties)
     @ConditionalOnMissingBean
     fun botStatusCache(botStatusChangedListener: BotStatusChangedListener) = BotStatusCache(botStatusChangedListener)
 
+    // TODO test me!
     @Bean
     @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
     @ConditionalOnMissingBean
@@ -61,11 +62,11 @@ class BotAutoConfiguration(private val toChatBotProperties: ToChatBotProperties)
 
     @Bean
     @ConditionalOnMissingBean
-    fun serverRegistrationBean(botStatusChangedListener: BotStatusChangedListener) = ServerRegistrationExchangeService(toChatBotProperties.toWeMaLaConfiguration(), botStatusChangedListener, RestTemplateBuilder().build())
+    fun serverRegistrationBean(botStatusCache: BotStatusCache) = ServerRegistrationExchangeService(toChatBotProperties.toWeMaLaConfiguration(), botStatusCache, RestTemplateBuilder().build())
 
     @Bean
     @ConditionalOnMissingBean
-    fun serverAuthenticationBean(botStatusChangedListener: BotStatusChangedListener, serverRegistrationExchangeService: ServerRegistrationExchangeService) = ServerAuthenticationExchangeService(toChatBotProperties.toWeMaLaConfiguration(), RestTemplateBuilder().build(), botStatusChangedListener, serverRegistrationExchangeService)
+    fun serverAuthenticationBean(botStatusCache: BotStatusCache, serverRegistrationExchangeService: ServerRegistrationExchangeService) = ServerAuthenticationExchangeService(toChatBotProperties.toWeMaLaConfiguration(), RestTemplateBuilder().build(), botStatusCache, serverRegistrationExchangeService)
 
     @Bean
     @ConditionalOnMissingBean

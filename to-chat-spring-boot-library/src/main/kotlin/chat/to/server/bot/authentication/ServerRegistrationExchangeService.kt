@@ -1,5 +1,6 @@
 package chat.to.server.bot.authentication
 
+import chat.to.server.bot.cache.BotStatusCache
 import chat.to.server.bot.configuration.WeMaLaConfiguration
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpEntity
@@ -8,7 +9,7 @@ import org.springframework.web.client.HttpStatusCodeException
 import org.springframework.web.client.RestTemplate
 
 class ServerRegistrationExchangeService(private var botConfiguration: WeMaLaConfiguration,
-                                        private var botStatusChangedListener: BotStatusChangedListener,
+                                        private var botStatusCache: BotStatusCache,
                                         private var restTemplate: RestTemplate) {
 
     private val log = LoggerFactory.getLogger(ServerRegistrationExchangeService::class.java)
@@ -26,7 +27,7 @@ class ServerRegistrationExchangeService(private var botConfiguration: WeMaLaConf
             } else {
                 log.error("Register bot on wemala server failed with message '${e.message}'")
             }
-            botStatusChangedListener.botStatusChanged(BotStatus.REGISTRATION_FAILED)
+            botStatusCache.registrationFailed()
             false
         }
     }

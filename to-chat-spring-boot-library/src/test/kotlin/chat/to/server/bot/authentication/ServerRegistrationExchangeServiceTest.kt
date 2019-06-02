@@ -1,14 +1,15 @@
 package chat.to.server.bot.authentication
 
+import chat.to.server.bot.cache.BotStatusCache
 import chat.to.server.bot.configuration.Bot
 import chat.to.server.bot.configuration.Server
 import chat.to.server.bot.configuration.WeMaLaConfiguration
-import org.assertj.core.api.Assertions
+import com.nhaarman.mockitokotlin2.mock
+import org.assertj.core.api.Assertions.assertThat
 import org.hamcrest.core.IsEqual
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.web.client.RestTemplateBuilder
 import org.springframework.http.HttpMethod
@@ -19,21 +20,18 @@ import org.springframework.test.web.client.match.MockRestRequestMatchers
 import org.springframework.test.web.client.response.MockRestResponseCreators
 
 @ExtendWith(SpringExtension::class)
-@SpringBootTest(classes = [LastBotStatusForTesting::class])
+@SpringBootTest
 internal class ServerRegistrationExchangeServiceTest {
-
-    @Autowired
-    private lateinit var lastBotStatusForTesting: LastBotStatusForTesting
 
     private val restTemplate = RestTemplateBuilder().build()
     private val server = MockRestServiceServer.bindTo(restTemplate).build()
+    private val botStatusCache = BotStatusCache(mock())
     private lateinit var service: ServerRegistrationExchangeService
 
     @BeforeEach
     fun setUp() {
         val configuration = WeMaLaConfiguration(Bot("unit@test.bot", "unit-test-bot-password", "unit-test-bot-username"), Server("http://server.unit.test/"))
-        service = ServerRegistrationExchangeService(configuration, lastBotStatusForTesting, restTemplate)
-        lastBotStatusForTesting.clear()
+        service = ServerRegistrationExchangeService(configuration, botStatusCache, restTemplate)
     }
 
     @Test
@@ -45,8 +43,8 @@ internal class ServerRegistrationExchangeServiceTest {
                 .andExpect(MockRestRequestMatchers.jsonPath<String>("username", IsEqual.equalTo<String>("unit-test-bot-username")))
                 .andRespond(MockRestResponseCreators.withSuccess())
 
-        Assertions.assertThat(service.registerBot()).isTrue()
-        Assertions.assertThat(lastBotStatusForTesting.lastBotStatus).isNull()
+        assertThat(service.registerBot()).isTrue()
+        assertThat(botStatusCache.botStatus).isEqualTo(BotStatus.STARTING)
 
         server.verify()
     }
@@ -60,8 +58,8 @@ internal class ServerRegistrationExchangeServiceTest {
                 .andExpect(MockRestRequestMatchers.jsonPath<String>("username", IsEqual.equalTo<String>("unit-test-bot-username")))
                 .andRespond(MockRestResponseCreators.withBadRequest())
 
-        Assertions.assertThat(service.registerBot()).isFalse()
-        Assertions.assertThat(lastBotStatusForTesting.lastBotStatus).isEqualTo(BotStatus.REGISTRATION_FAILED)
+        assertThat(service.registerBot()).isFalse()
+        assertThat(botStatusCache.botStatus).isEqualTo(BotStatus.REGISTRATION_FAILED)
 
         server.verify()
     }
@@ -75,8 +73,8 @@ internal class ServerRegistrationExchangeServiceTest {
                 .andExpect(MockRestRequestMatchers.jsonPath<String>("username", IsEqual.equalTo<String>("unit-test-bot-username")))
                 .andRespond(MockRestResponseCreators.withStatus(HttpStatus.CONFLICT))
 
-        Assertions.assertThat(service.registerBot()).isFalse()
-        Assertions.assertThat(lastBotStatusForTesting.lastBotStatus).isEqualTo(BotStatus.REGISTRATION_FAILED)
+        assertThat(service.registerBot()).isFalse()
+        assertThat(botStatusCache.botStatus).isEqualTo(BotStatus.REGISTRATION_FAILED)
 
         server.verify()
     }
