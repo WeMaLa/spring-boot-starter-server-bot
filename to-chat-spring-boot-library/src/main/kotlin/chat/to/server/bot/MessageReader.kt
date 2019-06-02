@@ -5,7 +5,6 @@ import chat.to.server.bot.authentication.BotStatusChangedListener
 import chat.to.server.bot.authentication.ServerAuthenticationExchangeService
 import chat.to.server.bot.cache.LastReceivedMessagesCache
 import chat.to.server.bot.configuration.WeMaLaConfiguration
-import chat.to.server.bot.mapper.formatUTCDateToISO8601
 import chat.to.server.bot.mapper.parseISO8601Date
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpEntity
@@ -14,8 +13,6 @@ import org.springframework.http.HttpMethod
 import org.springframework.http.ResponseEntity
 import org.springframework.web.client.HttpStatusCodeException
 import org.springframework.web.client.RestTemplate
-import java.time.LocalDateTime
-import java.time.temporal.ChronoUnit
 
 class MessageReader(private var botConfiguration: WeMaLaConfiguration,
                     private var restTemplate: RestTemplate,
@@ -62,10 +59,9 @@ class MessageReader(private var botConfiguration: WeMaLaConfiguration,
             val url = botConfiguration.loadMessagesUrl()
             log.debug("Retrieve messages from $url")
             val response = restTemplate.exchange(url, HttpMethod.GET, httpEntity, MessageResponse::class.java)
-            lastIso8601ServerDate = response.iso8601Date()
+            lastReceivedMessagesCache.updateLastIso8601ServerDate(response.iso8601Date())
             val messages = response.body?.content!!.asList()
             // TODO only update BotStatus if changed
-            // TODO use custom interface BotStatusReceiver (like MessageReceiver?)
             botStatusChangedListener.botStatusChanged(BotStatus.OK)
             return messages
         } catch (e: Exception) {
@@ -79,7 +75,7 @@ class MessageReader(private var botConfiguration: WeMaLaConfiguration,
         }
     }
 
-    private fun WeMaLaConfiguration.loadMessagesUrl() = if (lastIso8601ServerDate == null) "${this.server.url}/api/messages?status=SEND&status=RECEIVED" else "${this.server.url}/api/messages?status=SEND&status=RECEIVED&lastUpdatedSince=${lastIso8601ServerDateWithBuffer}"
+    private fun WeMaLaConfiguration.loadMessagesUrl() = if (lastReceivedMessagesCache.lastIso8601ServerDateWithBuffer == null) "${this.server.url}/api/messages?status=SEND&status=RECEIVED" else "${this.server.url}/api/messages?status=SEND&status=RECEIVED&lastUpdatedSince=${lastReceivedMessagesCache.lastIso8601ServerDateWithBuffer}"
     private fun ResponseEntity<MessageResponse>.iso8601Date() = this.headers["date-iso8601"]?.get(0).parseISO8601Date()
 
     private fun createHttpEntity(token: String?, body: Any? = null): HttpEntity<Any> {
@@ -92,12 +88,4 @@ class MessageReader(private var botConfiguration: WeMaLaConfiguration,
         var content: Array<Message> = arrayOf()
     }
 
-    companion object {
-        var lastIso8601ServerDate: LocalDateTime? = null
-
-        // TODO sometimes the server will temporarily cheat messages because the timestamp does not match. The elasticsearch saves the documents asynchronously. :/
-        // TODO should this parameter configurable in application.properties?
-        val lastIso8601ServerDateWithBuffer: String
-            get() = lastIso8601ServerDate!!.minus(500L, ChronoUnit.MILLIS).formatUTCDateToISO8601()
-    }
 }

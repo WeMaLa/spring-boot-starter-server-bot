@@ -1,8 +1,12 @@
 package chat.to.server.bot.cache
 
+import chat.to.server.bot.mapper.formatUTCDateToISO8601
 import org.slf4j.LoggerFactory
+import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
 
-class LastReceivedMessagesCache(private val maxCacheSize: Int) {
+class LastReceivedMessagesCache(private val maxCacheSize: Int,
+                                private var lastIso8601ServerDate: LocalDateTime? = null) {
 
     private val log = LoggerFactory.getLogger(this::class.java)
 
@@ -16,8 +20,15 @@ class LastReceivedMessagesCache(private val maxCacheSize: Int) {
         }
     }
 
+    val lastIso8601ServerDateWithBuffer: String?
+        get() = lastIso8601ServerDate?.minus(500L, ChronoUnit.MILLIS)?.formatUTCDateToISO8601()
+
     val size: Int
         get() = cachedMessageIdentifiers.size
+
+    fun updateLastIso8601ServerDate(lastIso8601ServerDate: LocalDateTime?) {
+        this.lastIso8601ServerDate = lastIso8601ServerDate
+    }
 
     fun addMessageIdentifierToCache(identifier: String) {
         if (maxCacheSize <= 0) {

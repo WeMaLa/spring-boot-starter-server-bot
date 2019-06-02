@@ -44,14 +44,15 @@ internal class MessageReaderTest {
     private val restTemplate = RestTemplateBuilder().build()
     private val server = MockRestServiceServer.bindTo(restTemplate).build()
     private val serverAuthenticationExchangeServiceMock = mock<ServerAuthenticationExchangeService>()
+    private val lastReceivedMessagesCache = LastReceivedMessagesCache(100)
     private lateinit var reader: MessageReader
+
 
     @BeforeEach
     fun setUp() {
         val configuration = WeMaLaConfiguration(Bot("unit@test.bot", "unit-test-bot-password", "unit-test-bot-username"), Server("http://server.unit.test/"))
-        reader = MessageReader(configuration, restTemplate, lastBotStatusForTesting, serverAuthenticationExchangeServiceMock, LastReceivedMessagesCache(100))
+        reader = MessageReader(configuration, restTemplate, lastBotStatusForTesting, serverAuthenticationExchangeServiceMock, lastReceivedMessagesCache)
         lastBotStatusForTesting.clear()
-        MessageReader.lastIso8601ServerDate = null
     }
 
     @Test
@@ -104,7 +105,7 @@ internal class MessageReaderTest {
     @Test
     fun `lastIso8601ServerDate is already set`() {
         whenever(serverAuthenticationExchangeServiceMock.authenticate()).thenReturn("unit-test-auth-token")
-        MessageReader.lastIso8601ServerDate = "2017-12-12T19:58:50.099-00:00".parseISO8601Date()
+        lastReceivedMessagesCache.updateLastIso8601ServerDate("2017-12-12T19:58:50.099-00:00".parseISO8601Date())
 
         val httpHeaders = HttpHeaders()
         httpHeaders.set("content-type", "application/json;charset=UTF-8 ")

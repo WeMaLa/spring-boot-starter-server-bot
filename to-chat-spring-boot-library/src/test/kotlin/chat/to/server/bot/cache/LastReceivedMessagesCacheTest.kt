@@ -1,7 +1,10 @@
 package chat.to.server.bot.cache
 
+import chat.to.server.bot.mapper.formatUTCDateToISO8601
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
 
 internal class LastReceivedMessagesCacheTest {
 
@@ -36,5 +39,26 @@ internal class LastReceivedMessagesCacheTest {
         cache.addMessageIdentifierToCache("a-message-identifier")
         assertThat(cache.containsMessageIdentifier("a-message-identifier")).isFalse()
         assertThat(cache.size).isEqualTo(0)
+    }
+
+    @Test
+    internal fun `get lastIso8601ServerDateWithBuffer when date is null`() {
+        assertThat(cache.lastIso8601ServerDateWithBuffer).isNull()
+    }
+
+    @Test
+    internal fun `update lastIso8601ServerDate`() {
+        val lastIso8601ServerDate = LocalDateTime.now()
+
+        cache.updateLastIso8601ServerDate(lastIso8601ServerDate)
+
+        assertThat(cache.lastIso8601ServerDateWithBuffer).isEqualTo(lastIso8601ServerDate.minus(500L, ChronoUnit.MILLIS)?.formatUTCDateToISO8601())
+    }
+
+    @Test
+    internal fun `update lastIso8601ServerDate with null`() {
+        cache.updateLastIso8601ServerDate(null)
+
+        assertThat(cache.lastIso8601ServerDateWithBuffer).isNull()
     }
 }
