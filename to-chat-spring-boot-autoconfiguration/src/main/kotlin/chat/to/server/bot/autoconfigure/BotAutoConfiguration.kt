@@ -48,10 +48,11 @@ class BotAutoConfiguration(private val toChatBotProperties: ToChatBotProperties)
         }
     }
 
+    // TODO test me!
     @Bean
     @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
     @ConditionalOnMissingBean
-    fun botStatusCache() = BotStatusCache()
+    fun botStatusCache(botStatusChangedListener: BotStatusChangedListener) = BotStatusCache(botStatusChangedListener)
 
     @Bean
     @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
