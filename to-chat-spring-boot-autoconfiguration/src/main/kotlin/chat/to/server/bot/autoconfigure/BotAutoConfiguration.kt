@@ -43,8 +43,10 @@ class BotAutoConfiguration(private val toChatBotProperties: ToChatBotProperties)
     @ConditionalOnMissingBean
     fun botStatusChangedListener() = object : BotStatusChangedListener {
         override fun botStatusChanged(botStatus: BotStatus) {
-            // TODO check bot status to set correct log level
-            log.info("Bot status changed to '$botStatus'. To handle this change implement custom bean of BotStatusChangedListener.")
+            when (botStatus) {
+                BotStatus.OK, BotStatus.STARTING -> log.info("Bot status changed to '$botStatus'. To handle this change implement custom bean of BotStatusChangedListener.")
+                else -> log.error("Bot status changed to '$botStatus'. To handle this change implement custom bean of BotStatusChangedListener.")
+            }
         }
     }
 
