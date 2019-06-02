@@ -7,6 +7,7 @@ import chat.to.server.bot.authentication.BotStatus
 import chat.to.server.bot.authentication.BotStatusChangedListener
 import chat.to.server.bot.authentication.ServerAuthenticationExchangeService
 import chat.to.server.bot.authentication.ServerRegistrationExchangeService
+import chat.to.server.bot.cache.BotStatusCache
 import chat.to.server.bot.cache.LastReceivedMessagesCache
 import chat.to.server.bot.configuration.WeMaLaConfiguration
 import org.slf4j.LoggerFactory
@@ -50,7 +51,12 @@ class BotAutoConfiguration(private val toChatBotProperties: ToChatBotProperties)
     @Bean
     @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
     @ConditionalOnMissingBean
-    fun lastReceivedMessagesCache() = LastReceivedMessagesCache(toChatBotProperties.bot!!.maxCacheSize)
+    fun botStatusCache() = BotStatusCache()
+
+    @Bean
+    @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
+    @ConditionalOnMissingBean
+    fun lastReceivedMessagesCache() = LastReceivedMessagesCache(toChatBotProperties.bot.maxCacheSize)
 
     @Bean
     @ConditionalOnMissingBean
