@@ -1,8 +1,8 @@
 package chat.to.server.bot
 
 import chat.to.server.bot.authentication.BotStatus
-import chat.to.server.bot.authentication.LastBotStatusForTesting
 import chat.to.server.bot.authentication.ServerAuthenticationExchangeService
+import chat.to.server.bot.cache.BotStatusCache
 import chat.to.server.bot.cache.LastReceivedMessagesCache
 import chat.to.server.bot.configuration.Bot
 import chat.to.server.bot.configuration.Server
@@ -17,7 +17,6 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.web.client.RestTemplateBuilder
 import org.springframework.http.HttpHeaders
@@ -34,16 +33,14 @@ import org.springframework.test.web.client.response.MockRestResponseCreators.wit
 import java.time.temporal.ChronoUnit
 
 @ExtendWith(SpringExtension::class)
-@SpringBootTest(classes = [LastBotStatusForTesting::class])
+@SpringBootTest
 @DisplayName("Retrieve messages with")
 internal class MessageReaderTest {
-
-    @Autowired
-    private lateinit var lastBotStatusForTesting: LastBotStatusForTesting
 
     private val restTemplate = RestTemplateBuilder().build()
     private val server = MockRestServiceServer.bindTo(restTemplate).build()
     private val serverAuthenticationExchangeServiceMock = mock<ServerAuthenticationExchangeService>()
+    private val botStatusCache = BotStatusCache(mock())
     private val lastReceivedMessagesCache = LastReceivedMessagesCache(100)
     private lateinit var reader: MessageReader
 
@@ -51,8 +48,7 @@ internal class MessageReaderTest {
     @BeforeEach
     fun setUp() {
         val configuration = WeMaLaConfiguration(Bot("unit@test.bot", "unit-test-bot-password", "unit-test-bot-username"), Server("http://server.unit.test/"))
-        reader = MessageReader(configuration, restTemplate, lastBotStatusForTesting, serverAuthenticationExchangeServiceMock, lastReceivedMessagesCache)
-        lastBotStatusForTesting.clear()
+        reader = MessageReader(configuration, restTemplate, botStatusCache, serverAuthenticationExchangeServiceMock, lastReceivedMessagesCache)
     }
 
     @Test
@@ -97,7 +93,7 @@ internal class MessageReaderTest {
         assertThat(messages.findByIdentifier("AWA6_o33A1S3ubG7cRdz").links.channel.identifier).isEqualTo("AWA6_ozSA1S3ubG7cRdx")
         assertThat(messages.findByIdentifier("AWA6_o33A1S3ubG7cRdz").links.sender.href).isEqualTo("/api/contact/admin@iconect.io")
         assertThat(messages.findByIdentifier("AWA6_o33A1S3ubG7cRdz").links.sender.identifier).isEqualTo("admin@iconect.io")
-        assertThat(lastBotStatusForTesting.lastBotStatus).isEqualTo(BotStatus.OK)
+        assertThat(botStatusCache.botStatus).isEqualTo(BotStatus.OK)
 
         server.verify()
     }
@@ -145,7 +141,7 @@ internal class MessageReaderTest {
         assertThat(messages.findByIdentifier("AWA6_o33A1S3ubG7cRdz").links.channel.identifier).isEqualTo("AWA6_ozSA1S3ubG7cRdx")
         assertThat(messages.findByIdentifier("AWA6_o33A1S3ubG7cRdz").links.sender.href).isEqualTo("/api/contact/admin@iconect.io")
         assertThat(messages.findByIdentifier("AWA6_o33A1S3ubG7cRdz").links.sender.identifier).isEqualTo("admin@iconect.io")
-        assertThat(lastBotStatusForTesting.lastBotStatus).isEqualTo(BotStatus.OK)
+        assertThat(botStatusCache.botStatus).isEqualTo(BotStatus.OK)
 
         server.verify()
     }
@@ -181,7 +177,7 @@ internal class MessageReaderTest {
         assertThat(messages.findByIdentifier("AWA6_vR3A1S3ubG7cRd1").links.channel.identifier).isEqualTo("AWA6_ozSA1S3ubG7cRdx")
         assertThat(messages.findByIdentifier("AWA6_vR3A1S3ubG7cRd1").links.sender.href).isEqualTo("/api/contact/admin@iconect.io")
         assertThat(messages.findByIdentifier("AWA6_vR3A1S3ubG7cRd1").links.sender.identifier).isEqualTo("admin@iconect.io")
-        assertThat(lastBotStatusForTesting.lastBotStatus).isEqualTo(BotStatus.OK)
+        assertThat(botStatusCache.botStatus).isEqualTo(BotStatus.OK)
 
         server.verify()
     }
@@ -218,7 +214,7 @@ internal class MessageReaderTest {
         assertThat(messages1.findByIdentifier("AWA6_vR3A1S3ubG7cRd1").links.channel.identifier).isEqualTo("AWA6_ozSA1S3ubG7cRdx")
         assertThat(messages1.findByIdentifier("AWA6_vR3A1S3ubG7cRd1").links.sender.href).isEqualTo("/api/contact/admin@iconect.io")
         assertThat(messages1.findByIdentifier("AWA6_vR3A1S3ubG7cRd1").links.sender.identifier).isEqualTo("admin@iconect.io")
-        assertThat(lastBotStatusForTesting.lastBotStatus).isEqualTo(BotStatus.OK)
+        assertThat(botStatusCache.botStatus).isEqualTo(BotStatus.OK)
 
         server.verify()
     }
@@ -233,7 +229,7 @@ internal class MessageReaderTest {
                 .andRespond(MockRestResponseCreators.withBadRequest())
 
         assertThat(reader.retrieveMessages()).isEmpty()
-        assertThat(lastBotStatusForTesting.lastBotStatus).isEqualTo(BotStatus.RECEIVE_MESSAGES_FAILED)
+        assertThat(botStatusCache.botStatus).isEqualTo(BotStatus.RECEIVE_MESSAGES_FAILED)
 
         server.verify()
     }
@@ -263,7 +259,7 @@ internal class MessageReaderTest {
                 .containsExactly(
                         tuple("AWA6_vR3A1S3ubG7cRd1", "message2"),
                         tuple("AWA6_o33A1S3ubG7cRdz", "message1"))
-        assertThat(lastBotStatusForTesting.lastBotStatus).isEqualTo(BotStatus.MARK_MESSAGES_FAILED)
+        assertThat(botStatusCache.botStatus).isEqualTo(BotStatus.MARK_MESSAGES_FAILED)
 
         server.verify()
     }
@@ -293,7 +289,7 @@ internal class MessageReaderTest {
                 .andRespond(response)
 
         assertThat(reader.retrieveMessages()).isEmpty()
-        assertThat(lastBotStatusForTesting.lastBotStatus).isEqualTo(BotStatus.OK)
+        assertThat(botStatusCache.botStatus).isEqualTo(BotStatus.OK)
     }
 
     private fun List<Message>.findByIdentifier(identifier: String) = this.first { it.identifier == identifier }

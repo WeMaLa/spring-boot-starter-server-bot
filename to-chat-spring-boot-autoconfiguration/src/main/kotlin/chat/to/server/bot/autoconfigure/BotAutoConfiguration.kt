@@ -73,7 +73,7 @@ class BotAutoConfiguration(private val toChatBotProperties: ToChatBotProperties)
 
     @Bean
     @ConditionalOnMissingBean
-    fun scheduler(botStatusChangedListener: BotStatusChangedListener, messageReceiver: MessageReceiver, serverAuthenticationExchangeService: ServerAuthenticationExchangeService, lastReceivedMessagesCache: LastReceivedMessagesCache) = MessageReceiveScheduler(messageReceiver, MessageReader(toChatBotProperties.toWeMaLaConfiguration(), RestTemplateBuilder().build(), botStatusChangedListener, serverAuthenticationExchangeService, lastReceivedMessagesCache))
+    fun scheduler(botStatusCache: BotStatusCache, messageReceiver: MessageReceiver, serverAuthenticationExchangeService: ServerAuthenticationExchangeService, lastReceivedMessagesCache: LastReceivedMessagesCache) = MessageReceiveScheduler(messageReceiver, MessageReader(toChatBotProperties.toWeMaLaConfiguration(), RestTemplateBuilder().build(), botStatusCache, serverAuthenticationExchangeService, lastReceivedMessagesCache))
 
     private fun ToChatBotProperties.toWeMaLaConfiguration() = WeMaLaConfiguration(this.bot.toWeMaLaBot(), this.server.toWeMaLaServer())
     private fun Bot?.toWeMaLaBot() = chat.to.server.bot.configuration.Bot(this!!.identifier, this.password, this.username)

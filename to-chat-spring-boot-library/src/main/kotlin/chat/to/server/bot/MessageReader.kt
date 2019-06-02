@@ -1,8 +1,7 @@
 package chat.to.server.bot
 
-import chat.to.server.bot.authentication.BotStatus
-import chat.to.server.bot.authentication.BotStatusChangedListener
 import chat.to.server.bot.authentication.ServerAuthenticationExchangeService
+import chat.to.server.bot.cache.BotStatusCache
 import chat.to.server.bot.cache.LastReceivedMessagesCache
 import chat.to.server.bot.configuration.WeMaLaConfiguration
 import chat.to.server.bot.mapper.parseISO8601Date
@@ -16,7 +15,7 @@ import org.springframework.web.client.RestTemplate
 
 class MessageReader(private var botConfiguration: WeMaLaConfiguration,
                     private var restTemplate: RestTemplate,
-                    private var botStatusChangedListener: BotStatusChangedListener,
+                    private var botStatusCache: BotStatusCache,
                     private var serverAuthenticationExchangeService: ServerAuthenticationExchangeService,
                     private var lastReceivedMessagesCache: LastReceivedMessagesCache) {
 
@@ -43,14 +42,14 @@ class MessageReader(private var botConfiguration: WeMaLaConfiguration,
         try {
             val url = botConfiguration.server.url + "/api/message/$messageIdentifier/read"
             restTemplate.exchange(url, HttpMethod.PATCH, httpEntity, String::class.java)
-            botStatusChangedListener.botStatusChanged(BotStatus.OK)
+            botStatusCache.ok()
         } catch (e: Exception) {
             if (e is HttpStatusCodeException) {
                 log.error("Mark message '$messageIdentifier' as read on wemala server failed with code '${e.statusCode}' and message '${e.message}'")
             } else {
                 log.error("Mark message '$messageIdentifier' as read on wemala server failed with message '${e.message}'")
             }
-            botStatusChangedListener.botStatusChanged(BotStatus.MARK_MESSAGES_FAILED)
+            botStatusCache.markMessagesAsReadFailed()
         }
     }
 
@@ -61,8 +60,7 @@ class MessageReader(private var botConfiguration: WeMaLaConfiguration,
             val response = restTemplate.exchange(url, HttpMethod.GET, httpEntity, MessageResponse::class.java)
             lastReceivedMessagesCache.updateLastIso8601ServerDate(response.iso8601Date())
             val messages = response.body?.content!!.asList()
-            // TODO only update BotStatus if changed
-            botStatusChangedListener.botStatusChanged(BotStatus.OK)
+            botStatusCache.ok()
             return messages
         } catch (e: Exception) {
             if (e is HttpStatusCodeException) {
@@ -70,7 +68,7 @@ class MessageReader(private var botConfiguration: WeMaLaConfiguration,
             } else {
                 log.error("Retrieve message from wemala server failed with message '${e.message}'")
             }
-            botStatusChangedListener.botStatusChanged(BotStatus.RECEIVE_MESSAGES_FAILED)
+            botStatusCache.receiveMessagesFailed()
             emptyList()
         }
     }
