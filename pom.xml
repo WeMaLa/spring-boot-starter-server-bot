@@ -25,6 +25,7 @@
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
         <maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
+        <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
 
         <spring-boot.version>2.2.0.M3</spring-boot.version>
 
