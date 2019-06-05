@@ -1,10 +1,8 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>chat.to</groupId>
     <artifactId>spring-boot-starter-to-chat-bot</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.1</version>
     <name>spring-boot-starter-to-chat-bot</name>
     <packaging>pom</packaging>
 
@@ -42,7 +40,7 @@
         <url>https://github.com/WeMaLa/spring-boot-to-chat-bot-starter</url>
         <connection>scm:git:https://github.com/WeMaLa/spring-boot-to-chat-bot-starter</connection>
         <developerConnection>scm:git:https://github.com/WeMaLa/spring-boot-to-chat-bot-starter</developerConnection>
-        <tag>HEAD</tag>
+        <tag>spring-boot-starter-to-chat-bot-0.0.1</tag>
     </scm>
 
     <dependencyManagement>
