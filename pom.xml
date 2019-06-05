@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>chat.to</groupId>
     <artifactId>spring-boot-starter-to-chat-bot</artifactId>
-    <version>0.0.4</version>
+    <version>0.0.5-SNAPSHOT</version>
     <name>spring-boot-starter-to-chat-bot</name>
     <packaging>pom</packaging>
 
@@ -41,7 +41,7 @@
         <url>https://github.com/WeMaLa/spring-boot-starter-server-bot</url>
         <connection>scm:git:https://github.com/WeMaLa/spring-boot-starter-server-bot</connection>
         <developerConnection>scm:git:https://github.com/WeMaLa/spring-boot-starter-server-bot</developerConnection>
-        <tag>spring-boot-starter-to-chat-bot-0.0.4</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <dependencyManagement>
