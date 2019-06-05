@@ -18,7 +18,12 @@
       "sourceType" : "chat.to.server.bot.autoconfigure.ToChatBotProperties"
     },
     {
-      "name": "chat.to.bot.username",
+      "name": "chat.to.bot.alias",
+      "type": "java.lang.String",
+      "sourceType" : "chat.to.server.bot.autoconfigure.ToChatBotProperties"
+    },
+    {
+      "name": "chat.to.bot.description",
       "type": "java.lang.String",
       "sourceType" : "chat.to.server.bot.autoconfigure.ToChatBotProperties"
     },

@@ -16,10 +16,10 @@ class ServerRegistrationExchangeService(private var botConfiguration: WeMaLaConf
 
     fun registerBot(): Boolean {
         log.info("Register new bot on wemala server")
-        val httpEntity = HttpEntity<Any>(UserRegistrationRequest(botConfiguration.bot.identifier, botConfiguration.bot.password, botConfiguration.bot.username))
+        val httpEntity = HttpEntity<Any>(BotRegistrationRequest(botConfiguration.bot.identifier, botConfiguration.bot.password, botConfiguration.bot.alias, botConfiguration.bot.description))
 
         return try {
-            restTemplate.exchange(botConfiguration.server.url + "/api/user", HttpMethod.POST, httpEntity, Any::class.java)
+            restTemplate.exchange(botConfiguration.server.url + "/api/bot", HttpMethod.POST, httpEntity, Any::class.java)
             true
         } catch (e: Exception) {
             if (e is HttpStatusCodeException) {
@@ -32,6 +32,6 @@ class ServerRegistrationExchangeService(private var botConfiguration: WeMaLaConf
         }
     }
 
-    data class UserRegistrationRequest internal constructor(val email: String, val password: String, val username: String)
+    private data class BotRegistrationRequest(val identifier: String, val password: String, val alias: String, val description: String? = null)
 
 }

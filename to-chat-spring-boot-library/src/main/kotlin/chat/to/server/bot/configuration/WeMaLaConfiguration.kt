@@ -7,4 +7,5 @@ class Server(val url: String)
 
 class Bot(val identifier: String,
           val password: String,
-          val username: String)
+          val alias: String,
+          val description: String? = null)

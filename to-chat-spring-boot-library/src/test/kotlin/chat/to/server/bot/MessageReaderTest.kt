@@ -47,7 +47,7 @@ internal class MessageReaderTest {
 
     @BeforeEach
     fun setUp() {
-        val configuration = WeMaLaConfiguration(Bot("unit@test.bot", "unit-test-bot-password", "unit-test-bot-username"), Server("http://server.unit.test/"))
+        val configuration = WeMaLaConfiguration(Bot("unit@test.bot", "unit-test-bot-password", "unit-test-bot-alias"), Server("http://server.unit.test/"))
         reader = MessageReader(configuration, restTemplate, botStatusCache, serverAuthenticationExchangeServiceMock, lastReceivedMessagesCache)
     }
 

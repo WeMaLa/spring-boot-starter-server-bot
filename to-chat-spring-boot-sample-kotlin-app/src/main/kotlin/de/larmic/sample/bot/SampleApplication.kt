@@ -17,7 +17,7 @@ class GreeterSampleApplication {
     fun receiver(messageSender: MessageSender) = object : MessageReceiver {
         override fun receiveMessage(message: Message) {
             log.info("Message '${message.text}' from '${message.createDate}' received")
-            messageSender.sendMessage(message.links.channel.identifier, "Hi there! Message '${message.text}' received!")
+            messageSender.sendMessage(message.links.channel.identifier, "Hi there! Message '${message.text}' received! ¯\\_(ツ)_/¯")
         }
     }
 }
