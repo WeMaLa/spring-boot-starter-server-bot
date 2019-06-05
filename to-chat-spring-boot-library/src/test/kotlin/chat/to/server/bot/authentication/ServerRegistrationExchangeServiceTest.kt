@@ -16,8 +16,8 @@ import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.client.MockRestServiceServer
-import org.springframework.test.web.client.match.MockRestRequestMatchers
-import org.springframework.test.web.client.response.MockRestResponseCreators
+import org.springframework.test.web.client.match.MockRestRequestMatchers.*
+import org.springframework.test.web.client.response.MockRestResponseCreators.*
 
 @ExtendWith(SpringExtension::class)
 @SpringBootTest
@@ -36,12 +36,12 @@ internal class ServerRegistrationExchangeServiceTest {
 
     @Test
     fun `register light bot on wemala server`() {
-        server.expect(MockRestRequestMatchers.requestTo("http://server.unit.test/api/user"))
-                .andExpect(MockRestRequestMatchers.method(HttpMethod.POST))
-                .andExpect(MockRestRequestMatchers.jsonPath<String>("email", IsEqual.equalTo<String>("unit@test.bot")))
-                .andExpect(MockRestRequestMatchers.jsonPath<String>("password", IsEqual.equalTo<String>("unit-test-bot-password")))
-                .andExpect(MockRestRequestMatchers.jsonPath<String>("username", IsEqual.equalTo<String>("unit-test-bot-username")))
-                .andRespond(MockRestResponseCreators.withSuccess())
+        server.expect(requestTo("http://server.unit.test/api/user"))
+                .andExpect(method(HttpMethod.POST))
+                .andExpect(jsonPath<String>("email", IsEqual.equalTo<String>("unit@test.bot")))
+                .andExpect(jsonPath<String>("password", IsEqual.equalTo<String>("unit-test-bot-password")))
+                .andExpect(jsonPath<String>("username", IsEqual.equalTo<String>("unit-test-bot-username")))
+                .andRespond(withSuccess())
 
         assertThat(service.registerBot()).isTrue()
         assertThat(botStatusCache.botStatus).isEqualTo(BotStatus.STARTING)
@@ -51,12 +51,12 @@ internal class ServerRegistrationExchangeServiceTest {
 
     @Test
     fun `register light bot on wemala server and server responds bad request`() {
-        server.expect(MockRestRequestMatchers.requestTo("http://server.unit.test/api/user"))
-                .andExpect(MockRestRequestMatchers.method(HttpMethod.POST))
-                .andExpect(MockRestRequestMatchers.jsonPath<String>("email", IsEqual.equalTo<String>("unit@test.bot")))
-                .andExpect(MockRestRequestMatchers.jsonPath<String>("password", IsEqual.equalTo<String>("unit-test-bot-password")))
-                .andExpect(MockRestRequestMatchers.jsonPath<String>("username", IsEqual.equalTo<String>("unit-test-bot-username")))
-                .andRespond(MockRestResponseCreators.withBadRequest())
+        server.expect(requestTo("http://server.unit.test/api/user"))
+                .andExpect(method(HttpMethod.POST))
+                .andExpect(jsonPath<String>("email", IsEqual.equalTo<String>("unit@test.bot")))
+                .andExpect(jsonPath<String>("password", IsEqual.equalTo<String>("unit-test-bot-password")))
+                .andExpect(jsonPath<String>("username", IsEqual.equalTo<String>("unit-test-bot-username")))
+                .andRespond(withBadRequest())
 
         assertThat(service.registerBot()).isFalse()
         assertThat(botStatusCache.botStatus).isEqualTo(BotStatus.REGISTRATION_FAILED)
@@ -66,12 +66,12 @@ internal class ServerRegistrationExchangeServiceTest {
 
     @Test
     fun `register light bot on wemala server and server responds conflict`() {
-        server.expect(MockRestRequestMatchers.requestTo("http://server.unit.test/api/user"))
-                .andExpect(MockRestRequestMatchers.method(HttpMethod.POST))
-                .andExpect(MockRestRequestMatchers.jsonPath<String>("email", IsEqual.equalTo<String>("unit@test.bot")))
-                .andExpect(MockRestRequestMatchers.jsonPath<String>("password", IsEqual.equalTo<String>("unit-test-bot-password")))
-                .andExpect(MockRestRequestMatchers.jsonPath<String>("username", IsEqual.equalTo<String>("unit-test-bot-username")))
-                .andRespond(MockRestResponseCreators.withStatus(HttpStatus.CONFLICT))
+        server.expect(requestTo("http://server.unit.test/api/user"))
+                .andExpect(method(HttpMethod.POST))
+                .andExpect(jsonPath<String>("email", IsEqual.equalTo<String>("unit@test.bot")))
+                .andExpect(jsonPath<String>("password", IsEqual.equalTo<String>("unit-test-bot-password")))
+                .andExpect(jsonPath<String>("username", IsEqual.equalTo<String>("unit-test-bot-username")))
+                .andRespond(withStatus(HttpStatus.CONFLICT))
 
         assertThat(service.registerBot()).isFalse()
         assertThat(botStatusCache.botStatus).isEqualTo(BotStatus.REGISTRATION_FAILED)
