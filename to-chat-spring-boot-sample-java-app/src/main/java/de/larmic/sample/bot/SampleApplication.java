@@ -21,7 +21,7 @@ public class SampleApplication {
     public MessageReceiver receiver(final MessageSender messageExchangeService) {
         return message -> {
             log.info("Message '{}' from '{}' received", message.getText(), message.getCreateDate());
-            messageExchangeService.sendMessage(message.getLinks().getChannel().getIdentifier(), "Hi there! Message '${message.text}' received!");
+            messageExchangeService.sendMessage(message.getLinks().getChannel().getIdentifier(), "Hi there! Message '${message.text}' received! ¯\\_(ツ)_/¯");
         };
     }
 }

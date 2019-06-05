@@ -79,7 +79,7 @@ class BotAutoConfiguration(private val toChatBotProperties: ToChatBotProperties)
     fun scheduler(botStatusCache: BotStatusCache, messageReceiver: MessageReceiver, serverAuthenticationExchangeService: ServerAuthenticationExchangeService, lastReceivedMessagesCache: LastReceivedMessagesCache) = MessageReceiveScheduler(messageReceiver, MessageReader(toChatBotProperties.toWeMaLaConfiguration(), RestTemplateBuilder().build(), botStatusCache, serverAuthenticationExchangeService, lastReceivedMessagesCache))
 
     private fun ToChatBotProperties.toWeMaLaConfiguration() = WeMaLaConfiguration(this.bot.toWeMaLaBot(), this.server.toWeMaLaServer())
-    private fun Bot?.toWeMaLaBot() = chat.to.server.bot.configuration.Bot(this!!.identifier, this.password, this.username)
+    private fun Bot?.toWeMaLaBot() = chat.to.server.bot.configuration.Bot(this!!.identifier, this.password, this.alias)
     private fun Server?.toWeMaLaServer() = chat.to.server.bot.configuration.Server(this!!.url)
 
 }

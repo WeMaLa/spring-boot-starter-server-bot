@@ -12,5 +12,6 @@ class Server(@NotBlank val url: String)
 
 class Bot(@NotBlank val identifier: String,
           @NotBlank val password: String,
-          @NotBlank val username: String,
+          @NotBlank val alias: String,
+          val description: String? = null,
           val maxCacheSize: Int = 1000)

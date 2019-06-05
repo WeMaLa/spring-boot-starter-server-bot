@@ -20,7 +20,8 @@ internal class ToChatBotPropertiesTest {
     internal fun `verify properties are injectable`() {
         assertThat(properties).isNotNull
         assertThat(properties.bot.identifier).isEqualTo("unit@test.bot")
-        assertThat(properties.bot.username).isEqualTo("unit-test-bot-username")
+        assertThat(properties.bot.alias).isEqualTo("unit-test-bot-alias")
+        assertThat(properties.bot.description).isEqualTo("unit-test-bot-description")
         assertThat(properties.bot.password).isEqualTo("unit-test-bot-password")
         assertThat(properties.bot.maxCacheSize).isEqualTo(1000)
         assertThat(properties.server.url).isEqualTo("http://server.unit.test/")

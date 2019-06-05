@@ -32,7 +32,7 @@ internal class MessageSenderTest {
 
     @BeforeEach
     fun setUp() {
-        val configuration = WeMaLaConfiguration(Bot("unit@test.bot", "unit-test-bot-password", "unit-test-bot-username"), Server("http://server.unit.test/"))
+        val configuration = WeMaLaConfiguration(Bot("unit@test.bot", "unit-test-bot-password", "unit-test-bot-alias"), Server("http://server.unit.test/"))
         service = MessageSender(configuration, restTemplate, serverAuthenticationExchangeServiceMock)
     }
 
