@@ -151,7 +151,7 @@
                         <!-- see https://docs.sonatype.org/display/Repository/How+To+Generate+PGP+Signatures+With+Maven -->
                         <mavenExecutorId>forked-path</mavenExecutorId>
                         <autoVersionSubmodules>true</autoVersionSubmodules>
-                        <arguments>-Dmaven.javadoc.skip=true</arguments>
+                        <arguments>-Dmaven.javadoc.skip=true -DskipTests</arguments>
                     </configuration>
                 </plugin>
 
