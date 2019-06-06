@@ -42,7 +42,7 @@
       "type": "java.lang.Integer"
     },
     {
-      "name": "chat.to.server.polling.enable",
+      "name": "chat.to.bot.scheduler.enable",
       "type": "java.lang.Boolean"
     }
   ],
