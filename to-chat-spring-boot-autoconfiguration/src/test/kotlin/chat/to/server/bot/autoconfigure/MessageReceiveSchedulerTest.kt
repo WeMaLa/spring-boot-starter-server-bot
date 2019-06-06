@@ -2,6 +2,8 @@ package chat.to.server.bot.autoconfigure
 
 import chat.to.server.bot.Message
 import chat.to.server.bot.MessageReader
+import chat.to.server.bot.autoconfigure.scheduling.MessageReceiveScheduler
+import chat.to.server.bot.autoconfigure.scheduling.MessageReceiver
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever

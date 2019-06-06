@@ -1,4 +1,4 @@
-package chat.to.server.bot.autoconfigure
+package chat.to.server.bot.autoconfigure.scheduling
 
 import chat.to.server.bot.Message
 

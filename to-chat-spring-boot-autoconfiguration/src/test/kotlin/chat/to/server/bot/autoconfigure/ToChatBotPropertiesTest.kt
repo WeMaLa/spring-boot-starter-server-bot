@@ -1,5 +1,6 @@
 package chat.to.server.bot.autoconfigure
 
+import chat.to.server.bot.autoconfigure.properties.ToChatBotProperties
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
