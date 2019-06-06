@@ -2,44 +2,48 @@
   "groups": [
     {
       "name": "chat.to",
-      "type": "chat.to.server.bot.autoconfigure.ToChatBotProperties",
-      "sourceType": "chat.to.server.bot.autoconfigure.ToChatBotProperties"
+      "type": "chat.to.server.bot.autoconfigure.properties.ToChatBotProperties",
+      "sourceType": "chat.to.server.bot.autoconfigure.properties.ToChatBotProperties"
     }
   ],
   "properties": [
     {
       "name": "chat.to.server.url",
       "type": "java.lang.String",
-      "sourceType" : "chat.to.server.bot.autoconfigure.ToChatBotProperties"
+      "sourceType" : "chat.to.server.bot.autoconfigure.properties.ToChatBotProperties"
     },
     {
       "name": "chat.to.bot.identifier",
       "type": "java.lang.String",
-      "sourceType" : "chat.to.server.bot.autoconfigure.ToChatBotProperties"
+      "sourceType" : "chat.to.server.bot.autoconfigure.properties.ToChatBotProperties"
     },
     {
       "name": "chat.to.bot.alias",
       "type": "java.lang.String",
-      "sourceType" : "chat.to.server.bot.autoconfigure.ToChatBotProperties"
+      "sourceType" : "chat.to.server.bot.autoconfigure.properties.ToChatBotProperties"
     },
     {
       "name": "chat.to.bot.description",
       "type": "java.lang.String",
-      "sourceType" : "chat.to.server.bot.autoconfigure.ToChatBotProperties"
+      "sourceType" : "chat.to.server.bot.autoconfigure.properties.ToChatBotProperties"
     },
     {
       "name": "chat.to.bot.password",
       "type": "java.lang.String",
-      "sourceType" : "chat.to.server.bot.autoconfigure.ToChatBotProperties"
+      "sourceType" : "chat.to.server.bot.autoconfigure.properties.ToChatBotProperties"
     },
     {
       "name": "chat.to.bot.maxCacheSize",
       "type": "java.lang.Integer",
-      "sourceType" : "chat.to.server.bot.autoconfigure.ToChatBotProperties"
+      "sourceType" : "chat.to.server.bot.autoconfigure.properties.ToChatBotProperties"
     },
     {
       "name": "chat.to.server.polling",
       "type": "java.lang.Integer"
+    },
+    {
+      "name": "chat.to.bot.scheduler.enable",
+      "type": "java.lang.Boolean"
     }
   ],
   "hints": [

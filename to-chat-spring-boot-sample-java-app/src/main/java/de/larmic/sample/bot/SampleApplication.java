@@ -1,7 +1,7 @@
 package de.larmic.sample.bot;
 
 import chat.to.server.bot.MessageSender;
-import chat.to.server.bot.autoconfigure.MessageReceiver;
+import chat.to.server.bot.autoconfigure.scheduling.MessageReceiver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;

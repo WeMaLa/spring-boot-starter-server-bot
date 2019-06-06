@@ -1,2 +1,4 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-chat.to.server.bot.autoconfigure.BotAutoConfiguration
+chat.to.server.bot.autoconfigure.BotAutoConfiguration,\
+chat.to.server.bot.autoconfigure.scheduling.SchedulingConfiguration,\
+chat.to.server.bot.autoconfigure.status.BotStatusConfiguration

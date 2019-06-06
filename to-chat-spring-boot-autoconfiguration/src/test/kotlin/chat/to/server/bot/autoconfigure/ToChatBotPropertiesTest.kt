@@ -1,5 +1,7 @@
 package chat.to.server.bot.autoconfigure
 
+import chat.to.server.bot.autoconfigure.properties.ToChatBotProperties
+import chat.to.server.bot.autoconfigure.status.BotStatusConfiguration
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -10,7 +12,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension
 
 @ExtendWith(SpringExtension::class)
 @SpringBootTest
-@ContextConfiguration(classes = [BotAutoConfiguration::class])
+@ContextConfiguration(classes = [BotAutoConfiguration::class, BotStatusConfiguration::class])
 internal class ToChatBotPropertiesTest {
 
     @Autowired
