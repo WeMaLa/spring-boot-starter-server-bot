@@ -1,12 +1,12 @@
 package chat.to.server.bot.autoconfigure.properties
 
 import org.springframework.boot.context.properties.ConfigurationProperties
-import org.springframework.boot.context.properties.ImmutableConfigurationProperties
+import org.springframework.boot.context.properties.ConstructorBinding
 import org.springframework.validation.annotation.Validated
 import javax.validation.constraints.NotBlank
 
 @ConfigurationProperties(prefix = "chat.to")
-@ImmutableConfigurationProperties
+@ConstructorBinding
 @Validated
 class ToChatBotProperties(val bot: Bot, val server: Server) {
 

@@ -27,7 +27,7 @@
         <maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
         <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
 
-        <spring-boot.version>2.2.0.RC1</spring-boot.version>
+        <spring-boot.version>2.2.0.RELEASE</spring-boot.version>
 
         <!-- testing -->
         <junit-jupiter.version>5.5.2</junit-jupiter.version>
@@ -92,7 +92,7 @@
 
             <!-- enable property validation -->
             <dependency>
-                <groupId>org.hibernate</groupId>
+                <groupId>org.hibernate.validator</groupId>
                 <artifactId>hibernate-validator</artifactId>
                 <version>6.0.16.Final</version>
                 <scope>provided</scope>
