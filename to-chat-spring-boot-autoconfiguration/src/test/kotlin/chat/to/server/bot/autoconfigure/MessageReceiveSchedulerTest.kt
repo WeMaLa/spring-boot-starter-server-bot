@@ -4,16 +4,15 @@ import chat.to.server.bot.Message
 import chat.to.server.bot.MessageReader
 import chat.to.server.bot.autoconfigure.scheduling.MessageReceiveScheduler
 import chat.to.server.bot.autoconfigure.scheduling.MessageReceiver
-import com.nhaarman.mockitokotlin2.doReturn
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.whenever
+import io.mockk.every
+import io.mockk.mockk
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 internal class MessageReceiveSchedulerTest {
 
     private val receiver = MyCustomMessageReceiver()
-    private val messageReaderMock = mock<MessageReader>()
+    private val messageReaderMock = mockk<MessageReader>()
     private val scheduler = MessageReceiveScheduler(receiver, messageReaderMock)
 
     @Test
@@ -21,8 +20,7 @@ internal class MessageReceiveSchedulerTest {
         val message1 = createMessage("test-message-1")
         val message2 = createMessage("test-message-2")
 
-        whenever(messageReaderMock.retrieveMessages())
-                .thenReturn(listOf(message1, message2))
+        every { messageReaderMock.retrieveMessages() } returns listOf(message1, message2)
 
         scheduler.scheduleReceiveMessages()
 
@@ -31,8 +29,10 @@ internal class MessageReceiveSchedulerTest {
                 .containsExactlyInAnyOrder("test-message-1", "test-message-2")
     }
 
-    private fun createMessage(identifier: String) = mock<Message>() {
-        on { this.identifier } doReturn identifier
+    private fun createMessage(identifier: String): Message {
+        val messageMock = mockk<Message>()
+        every { messageMock.identifier } returns identifier
+        return messageMock
     }
 
     class MyCustomMessageReceiver : MessageReceiver {
@@ -41,7 +41,5 @@ internal class MessageReceiveSchedulerTest {
         override fun receiveMessage(message: Message) {
             messages.add(message)
         }
-
     }
-
 }

@@ -5,9 +5,9 @@ import chat.to.server.bot.configuration.Bot
 import chat.to.server.bot.configuration.Server
 import chat.to.server.bot.configuration.WeMaLaConfiguration
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.whenever
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
 import org.hamcrest.core.IsEqual
 import org.junit.jupiter.api.BeforeEach
@@ -29,8 +29,8 @@ internal class ServerAuthenticationExchangeServiceTest {
 
     private val restTemplate = RestTemplateBuilder().build()
     private val server = MockRestServiceServer.bindTo(restTemplate).build()
-    private val serverRegistrationExchangeServiceMock = mock<ServerRegistrationExchangeService>()
-    private val botStatusCache = BotStatusCache(mock())
+    private val serverRegistrationExchangeServiceMock = mockk<ServerRegistrationExchangeService>()
+    private val botStatusCache = BotStatusCache(mockk(relaxed = true))
     private lateinit var service: ServerAuthenticationExchangeService
 
     @BeforeEach
@@ -59,7 +59,7 @@ internal class ServerAuthenticationExchangeServiceTest {
     fun `authenticate light bot on wemala server and servers first time responds unauthorized`() {
         val response = ServerAuthenticationExchangeService.JwtAuthenticationResponse()
         response.token = "unit-test-auth-token"
-        whenever(serverRegistrationExchangeServiceMock.registerBot()).thenReturn(true)
+        every { serverRegistrationExchangeServiceMock.registerBot() } returns true
 
         server.expect(MockRestRequestMatchers.requestTo("http://server.unit.test/api/auth/login"))
                 .andExpect(MockRestRequestMatchers.method(HttpMethod.POST))
@@ -77,14 +77,14 @@ internal class ServerAuthenticationExchangeServiceTest {
         assertThat(botStatusCache.botStatus).isEqualTo(BotStatus.STARTING)
 
         server.verify()
-        verify(serverRegistrationExchangeServiceMock).registerBot()
+        verify { serverRegistrationExchangeServiceMock.registerBot() }
     }
 
     @Test
     fun `authenticate light bot on wemala server and servers responds unauthorized and registration failed too`() {
         val response = ServerAuthenticationExchangeService.JwtAuthenticationResponse()
         response.token = "unit-test-auth-token"
-        whenever(serverRegistrationExchangeServiceMock.registerBot()).thenReturn(false)
+        every { serverRegistrationExchangeServiceMock.registerBot() } returns false
 
         server.expect(MockRestRequestMatchers.requestTo("http://server.unit.test/api/auth/login"))
                 .andExpect(MockRestRequestMatchers.method(HttpMethod.POST))
@@ -96,7 +96,7 @@ internal class ServerAuthenticationExchangeServiceTest {
         assertThat(botStatusCache.botStatus).isEqualTo(BotStatus.AUTHENTICATION_FAILED)
 
         server.verify()
-        verify(serverRegistrationExchangeServiceMock).registerBot()
+        verify { serverRegistrationExchangeServiceMock.registerBot() }
     }
 
     @Test

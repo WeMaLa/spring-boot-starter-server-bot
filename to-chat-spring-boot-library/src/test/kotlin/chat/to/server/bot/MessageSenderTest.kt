@@ -4,8 +4,8 @@ import chat.to.server.bot.authentication.ServerAuthenticationExchangeService
 import chat.to.server.bot.configuration.Bot
 import chat.to.server.bot.configuration.Server
 import chat.to.server.bot.configuration.WeMaLaConfiguration
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.whenever
+import io.mockk.every
+import io.mockk.mockk
 import org.hamcrest.core.Is
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
@@ -27,7 +27,7 @@ internal class MessageSenderTest {
 
     private val restTemplate = RestTemplateBuilder().build()
     private val server = MockRestServiceServer.bindTo(restTemplate).build()
-    private val serverAuthenticationExchangeServiceMock = mock<ServerAuthenticationExchangeService>()
+    private val serverAuthenticationExchangeServiceMock = mockk<ServerAuthenticationExchangeService>()
     private lateinit var service: MessageSender
 
     @BeforeEach
@@ -38,7 +38,7 @@ internal class MessageSenderTest {
 
     @Test
     fun `all is fine`() {
-        whenever(serverAuthenticationExchangeServiceMock.authenticate()).thenReturn("unit-test-auth-token")
+        every { serverAuthenticationExchangeServiceMock.authenticate() } returns "unit-test-auth-token"
 
         val messageContent = "unit-test-message-text"
         val channelIdentifier = "unit-test-channel-identifier"
@@ -57,7 +57,7 @@ internal class MessageSenderTest {
 
     @Test
     fun `authentication fails`() {
-        whenever(serverAuthenticationExchangeServiceMock.authenticate()).thenReturn(null)
+        every { serverAuthenticationExchangeServiceMock.authenticate() } returns null
 
         service.sendMessage("unit-test-channel-identifier", "unit-test-message-text")
 
@@ -66,7 +66,7 @@ internal class MessageSenderTest {
 
     @Test
     fun `channel identifier is empty`() {
-        whenever(serverAuthenticationExchangeServiceMock.authenticate()).thenReturn("unit-test-auth-token")
+        every { serverAuthenticationExchangeServiceMock.authenticate() } returns "unit-test-auth-token"
 
         service.sendMessage("", "unit-test-message-text")
 
@@ -75,7 +75,7 @@ internal class MessageSenderTest {
 
     @Test
     fun `message content is empty`() {
-        whenever(serverAuthenticationExchangeServiceMock.authenticate()).thenReturn("unit-test-auth-token")
+        every { serverAuthenticationExchangeServiceMock.authenticate() } returns "unit-test-auth-token"
 
         service.sendMessage("unit-test-channel-identifier", "")
 

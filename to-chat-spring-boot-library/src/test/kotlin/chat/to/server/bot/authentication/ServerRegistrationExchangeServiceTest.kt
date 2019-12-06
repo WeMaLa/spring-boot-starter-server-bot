@@ -4,7 +4,7 @@ import chat.to.server.bot.cache.BotStatusCache
 import chat.to.server.bot.configuration.Bot
 import chat.to.server.bot.configuration.Server
 import chat.to.server.bot.configuration.WeMaLaConfiguration
-import com.nhaarman.mockitokotlin2.mock
+import io.mockk.mockk
 import org.assertj.core.api.Assertions.assertThat
 import org.hamcrest.core.IsEqual.equalTo
 import org.junit.jupiter.api.BeforeEach
@@ -27,7 +27,7 @@ internal class ServerRegistrationExchangeServiceTest {
 
     private val restTemplate = RestTemplateBuilder().build()
     private val server = MockRestServiceServer.bindTo(restTemplate).build()
-    private val botStatusCache = BotStatusCache(mock())
+    private val botStatusCache = BotStatusCache(mockk(relaxed = true))
     private lateinit var service: ServerRegistrationExchangeService
 
     @BeforeEach

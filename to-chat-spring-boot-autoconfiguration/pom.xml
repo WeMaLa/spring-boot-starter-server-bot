@@ -69,10 +69,9 @@
             <artifactId>junit-jupiter</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.nhaarman.mockitokotlin2</groupId>
-            <artifactId>mockito-kotlin</artifactId>
+            <groupId>io.mockk</groupId>
+            <artifactId>mockk</artifactId>
         </dependency>
-
     </dependencies>
 
     <build>

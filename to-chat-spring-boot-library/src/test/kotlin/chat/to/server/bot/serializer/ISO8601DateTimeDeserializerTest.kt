@@ -1,8 +1,8 @@
 package chat.to.server.bot.serializer
 
 import com.fasterxml.jackson.core.JsonParser
-import com.nhaarman.mockitokotlin2.doReturn
-import com.nhaarman.mockitokotlin2.mock
+import io.mockk.every
+import io.mockk.mockk
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
@@ -44,8 +44,8 @@ internal class ISO8601DateTimeDeserializerTest {
     // JsonParser constructor is protected. So using a mock.
     private fun String.jsonParserMock(): JsonParser {
         val that = this
-        return mock {
-            on { it.valueAsString } doReturn that
+        return mockk {
+            every { valueAsString } returns  that
         }
     }
 }

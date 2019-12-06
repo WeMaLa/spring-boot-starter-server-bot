@@ -9,8 +9,8 @@ import chat.to.server.bot.configuration.Server
 import chat.to.server.bot.configuration.WeMaLaConfiguration
 import chat.to.server.bot.mapper.formatUTCDateToISO8601
 import chat.to.server.bot.mapper.parseISO8601Date
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.whenever
+import io.mockk.every
+import io.mockk.mockk
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.tuple
 import org.junit.jupiter.api.BeforeEach
@@ -39,8 +39,8 @@ internal class MessageReaderTest {
 
     private val restTemplate = RestTemplateBuilder().build()
     private val server = MockRestServiceServer.bindTo(restTemplate).build()
-    private val serverAuthenticationExchangeServiceMock = mock<ServerAuthenticationExchangeService>()
-    private val botStatusCache = BotStatusCache(mock())
+    private val serverAuthenticationExchangeServiceMock = mockk<ServerAuthenticationExchangeService>()
+    private val botStatusCache = BotStatusCache(mockk(relaxed = true))
     private val lastReceivedMessagesCache = LastReceivedMessagesCache(100)
     private lateinit var reader: MessageReader
 
@@ -53,7 +53,7 @@ internal class MessageReaderTest {
 
     @Test
     fun `lastIso8601ServerDate is not set`() {
-        whenever(serverAuthenticationExchangeServiceMock.authenticate()).thenReturn("unit-test-auth-token")
+        every { serverAuthenticationExchangeServiceMock.authenticate() } returns "unit-test-auth-token"
 
         val httpHeaders = HttpHeaders()
         httpHeaders.set("content-type", "application/json;charset=UTF-8 ")
@@ -100,7 +100,7 @@ internal class MessageReaderTest {
 
     @Test
     fun `lastIso8601ServerDate is already set`() {
-        whenever(serverAuthenticationExchangeServiceMock.authenticate()).thenReturn("unit-test-auth-token")
+        every { serverAuthenticationExchangeServiceMock.authenticate() } returns "unit-test-auth-token"
         lastReceivedMessagesCache.updateLastIso8601ServerDate("2017-12-12T19:58:50.099-00:00".parseISO8601Date())
 
         val httpHeaders = HttpHeaders()
@@ -148,7 +148,7 @@ internal class MessageReaderTest {
 
     @Test
     fun `message is retrieved twice in one response`() {
-        whenever(serverAuthenticationExchangeServiceMock.authenticate()).thenReturn("unit-test-auth-token")
+        every { serverAuthenticationExchangeServiceMock.authenticate() } returns "unit-test-auth-token"
 
         val httpHeaders = HttpHeaders()
         httpHeaders.set("content-type", "application/json;charset=UTF-8 ")
@@ -184,7 +184,7 @@ internal class MessageReaderTest {
 
     @Test
     fun `message is retrieved twice in two response`() {
-        whenever(serverAuthenticationExchangeServiceMock.authenticate()).thenReturn("unit-test-auth-token")
+        every { serverAuthenticationExchangeServiceMock.authenticate() } returns "unit-test-auth-token"
 
         val httpHeaders = HttpHeaders()
         httpHeaders.set("content-type", "application/json;charset=UTF-8 ")
@@ -221,7 +221,7 @@ internal class MessageReaderTest {
 
     @Test
     fun `server responds bad request`() {
-        whenever(serverAuthenticationExchangeServiceMock.authenticate()).thenReturn("unit-test-auth-token")
+        every { serverAuthenticationExchangeServiceMock.authenticate() } returns "unit-test-auth-token"
 
         server.expect(requestTo("http://server.unit.test/api/messages?status=SEND&status=RECEIVED"))
                 .andExpect(method(HttpMethod.GET))
@@ -236,7 +236,7 @@ internal class MessageReaderTest {
 
     @Test
     fun `mark messages responds bad request`() {
-        whenever(serverAuthenticationExchangeServiceMock.authenticate()).thenReturn("unit-test-auth-token")
+        every { serverAuthenticationExchangeServiceMock.authenticate() } returns "unit-test-auth-token"
 
         val response = withStatus(HttpStatus.OK)
                 .body(createResponse())
@@ -266,14 +266,14 @@ internal class MessageReaderTest {
 
     @Test
     fun `authentication fails`() {
-        whenever(serverAuthenticationExchangeServiceMock.authenticate()).thenReturn(null)
+        every { serverAuthenticationExchangeServiceMock.authenticate() } returns null
 
         assertThat(reader.retrieveMessages()).isEmpty()
     }
 
     @Test
     fun `messages are empty`() {
-        whenever(serverAuthenticationExchangeServiceMock.authenticate()).thenReturn("unit-test-auth-token")
+        every { serverAuthenticationExchangeServiceMock.authenticate() } returns "unit-test-auth-token"
 
         val httpHeaders = HttpHeaders()
         httpHeaders.set("content-type", "application/json;charset=UTF-8 ")
