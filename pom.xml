@@ -29,6 +29,8 @@
 
         <spring-boot.version>2.2.2.RELEASE</spring-boot.version>
 
+        <hibernate-validator.version>6.1.0.Final</hibernate-validator.version>
+
         <!-- testing -->
         <junit-jupiter.version>5.5.2</junit-jupiter.version>
         <mockk.version>1.9.3</mockk.version>
@@ -94,7 +96,7 @@
             <dependency>
                 <groupId>org.hibernate.validator</groupId>
                 <artifactId>hibernate-validator</artifactId>
-                <version>6.0.16.Final</version>
+                <version>${hibernate-validator.version}</version>
                 <scope>provided</scope>
             </dependency>
 
