@@ -32,7 +32,7 @@
         <hibernate-validator.version>6.1.0.Final</hibernate-validator.version>
 
         <!-- testing -->
-        <junit-jupiter.version>5.6.0</junit-jupiter.version>
+        <junit-jupiter.version>5.6.2</junit-jupiter.version>
         <mockk.version>1.9.3</mockk.version>
         <maven-surefire-plugin.version>3.0.0-M4</maven-surefire-plugin.version>
         <httpclient.version>4.5.10</httpclient.version>
