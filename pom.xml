@@ -29,7 +29,7 @@
 
         <spring-boot.version>2.3.1.RELEASE</spring-boot.version>
 
-        <hibernate-validator.version>6.1.0.Final</hibernate-validator.version>
+        <hibernate-validator.version>6.1.5.Final</hibernate-validator.version>
 
         <!-- testing -->
         <junit-jupiter.version>5.6.2</junit-jupiter.version>
